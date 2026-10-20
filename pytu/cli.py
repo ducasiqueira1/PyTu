@@ -1,6 +1,7 @@
 """Menus e interação com o terminal."""
 
 from datetime import datetime
+from collections.abc import Callable
 from pytu import anamneses, pacientes, storage
 
 MENU = '''
@@ -26,10 +27,23 @@ def mostrar_paciente(paciente: dict) -> None:
     print(f"Telefone: {paciente.get('telefone') or 'Não informado'}")
 
 
+def ler_campo_obrigatorio(pergunta: str, validar: Callable[[str], str]) -> str:
+    """Repete a pergunta até que o campo obrigatório seja válido."""
+    while True:
+        valor = input(pergunta)
+        try:
+            validar(valor)
+        except ValueError as erro:
+            print(f'Cadastro não concluído: {erro}')
+        else:
+            return valor
+
+
 def cadastrar_paciente() -> None:
+    nome = ler_campo_obrigatorio('Nome completo: ', pacientes.validar_nome)
+    nascimento = ler_campo_obrigatorio('Nascimento (DD/MM/AAAA): ', pacientes.validar_nascimento)
     paciente = pacientes.cadastrar(
-        input('Nome completo: '), input('Nascimento (DD/MM/AAAA): '),
-        input('Sexo (opcional): '), input('Telefone (opcional): '))
+        nome, nascimento, input('Sexo (opcional): '), input('Telefone (opcional): '))
     print(f"Paciente cadastrado. ID: {paciente['id']}")
 
 

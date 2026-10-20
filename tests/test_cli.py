@@ -30,3 +30,16 @@ class TesteCli(TesteComDados):
         with patch('builtins.input', side_effect=EOFError), redirect_stdout(StringIO()) as saida:
             cli.executar()
         self.assertIn('Programa encerrado', saida.getvalue())
+
+    def test_corrigir_campos_e_listar_paciente(self):
+        entradas = ['1', '', 'Pessoa', 'Pessoa Fictícia', '', '31/02/2000',
+                    '01/01/2000', '', '', '2', '6']
+        saida = StringIO()
+        with patch('builtins.input', side_effect=entradas), redirect_stdout(saida):
+            cli.executar()
+        texto = saida.getvalue()
+        self.assertEqual(texto.count('Cadastro não concluído:'), 4)
+        self.assertIn('Paciente cadastrado. ID:', texto)
+        self.assertIn('Nome: Pessoa Fictícia', texto)
+        self.assertNotIn('Nenhum paciente cadastrado.', texto)
+        self.assertEqual(len(pacientes.listar()), 1)

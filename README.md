@@ -68,7 +68,9 @@ Escolha uma opção de 1 a 6. Informe nascimento em `DD/MM/AAAA`, por exemplo
 `01/01/2000`. Um exemplo de nome fictício é `Pessoa Fictícia`. O ID gerado é
 exibido ao cadastrar; use a busca ou listagem para copiá-lo ao registrar uma
 anamnese ou consultar o histórico. Datas futuras e datas inexistentes são
-rejeitadas. Campos opcionais podem ficar em branco. A opção 6 encerra; Ctrl+C
+rejeitadas. Se o nome ou a data forem inválidos, o cadastro pede a correção
+do campo antes de continuar. O registro só é confirmado pela mensagem
+`Paciente cadastrado. ID: ...`. Campos opcionais podem ficar em branco. A opção 6 encerra; Ctrl+C
 ou fim da entrada também encerram o programa.
 
 Por padrão, os arquivos `pacientes.json` e `anamneses.json` são criados na pasta
@@ -146,11 +148,11 @@ python -m unittest discover -s tests -v
 ```
 
 Ou `python3 -m unittest discover -s tests -v`, conforme o ambiente.
-São 17 testes: cadastro, validações, UUIDs, buscas, associação de anamneses,
+São 18 testes: cadastro, validações, UUIDs, buscas, associação de anamneses,
 ordenação do histórico, UTF-8, reinicialização em outro processo, arquivos
 inválidos, falha de substituição atômica e fluxo do menu.
 
-Validação no ambiente de desenvolvimento: **17 testes aprovados no Python
+Validação no ambiente de desenvolvimento: **18 testes aprovados no Python
 3.13.5**. O build Docker foi tentado, mas o daemon recusou acesso ao socket
 (`/var/run/docker.sock`: permission denied). Assim, a construção da imagem,
 a execução no Python 3.12 do contêiner e a persistência por volume **não foram

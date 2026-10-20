@@ -5,19 +5,31 @@ from uuid import uuid4
 from pytu import storage
 
 
-def cadastrar(nome: str, nascimento: str, sexo: str = '', telefone: str = '') -> dict:
-    """Cadastra paciente com nome e nascimento no formato DD/MM/AAAA."""
+def validar_nome(nome: str) -> str:
+    """Valida e normaliza o nome completo."""
     nome = nome.strip()
     if len(nome.split()) < 2:
         raise ValueError('Informe o nome completo (nome e sobrenome).')
+    return nome
+
+
+def validar_nascimento(nascimento: str) -> str:
+    """Valida a data informada e retorna sua representação ISO."""
     try:
         data = datetime.strptime(nascimento.strip(), '%d/%m/%Y').date()
     except ValueError as erro:
         raise ValueError('Data de nascimento inválida. Use DD/MM/AAAA.') from erro
     if data > date.today():
         raise ValueError('A data de nascimento não pode estar no futuro.')
+    return data.isoformat()
+
+
+def cadastrar(nome: str, nascimento: str, sexo: str = '', telefone: str = '') -> dict:
+    """Cadastra paciente com nome e nascimento no formato DD/MM/AAAA."""
+    nome = validar_nome(nome)
+    data = validar_nascimento(nascimento)
     registros = listar()
-    paciente = {'id': str(uuid4()), 'nome': nome, 'nascimento': data.isoformat(),
+    paciente = {'id': str(uuid4()), 'nome': nome, 'nascimento': data,
                 'sexo': sexo.strip(), 'telefone': telefone.strip()}
     registros.append(paciente)
     storage.gravar('pacientes', registros)
